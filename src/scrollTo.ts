@@ -48,8 +48,19 @@ const scrollTo = (y: number,
 }
 
 // 对监听scroll事件的函数进行节流处理
-// const throttleByAnimationFrame = () => {
-
-// }
+export const throttleByAnimationFrame = (fn: (args: any)=> void) => {
+	let requestId: number|null = null
+	const later = (args: any) => () => {
+		requestId = null
+		fn(args)
+	}
+	const throttle = (args: any) => {
+		if (!requestId) {
+			requestId = raf(later(args))
+		}
+	}
+	throttle.cancel = () => raf.cancel(requestId as number)
+	return throttle
+}
 export default scrollTo
 
